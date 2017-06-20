@@ -5,9 +5,10 @@ Show progress.
 
 Stack: django, channels, celery, jquery, websockets. 
 
-Git clone 
-Python migrate 
-Start wsgi webserver ang asgi server 
-Start nginx 
+```git clone``` 
+```python manage.py migrate``` 
+```start your wsgi webserver```
+```start your asgi webserver ```
+```edit nginx config```
 
 Use for your profits.

@@ -20,7 +20,7 @@ Possible improvements:
 - drag'n'drop file to upload  
 - multiple files upload  
 - config celery for several workers  
-- check file saving status  
+- draw file saving progress  
 - alter client-side with React  
 - for production use industrial database (MySQL, PostgreSQL)  
 - use async framework for webapp (aiohttp, tornado, etc.)  

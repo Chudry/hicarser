@@ -15,3 +15,9 @@ Stack: django, channels, celery, jquery, websockets.
 ```edit nginx config```  
 
 Use for your profits.
+
+Possible improvements:
+- drag'n'drop file to upload  
+- multiple files upload  
+- config celery for several workers  
+- alter client-side with React  

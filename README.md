@@ -1,7 +1,7 @@
 # hicarser
 
-Ajax textfile load with async celery worker parsing(count symbols). 
-Show progress. 
+Ajax textfile load,parse(count symbols) with celery task, save result to db. 
+Show progressing on each step. 
 
 Stack: django, channels, celery, jquery, websockets. 
 
@@ -10,9 +10,9 @@ Stack: django, channels, celery, jquery, websockets.
 ```celery worker -A hicarser -l info```  
 ```python manage.py runserver```  
   or for real efficiency:  
-```start your wsgi webserver```  
-```start your asgi webserver ```  
-```edit nginx config```  
+```start your wsgi webserver (gunicorn for example)```  
+```start your asgi webserver (daphne for example)```  
+```edit your nginx config (hicarser.conf for example)```  
 
 Use for your profits.
 
@@ -20,4 +20,6 @@ Possible improvements:
 - drag'n'drop file to upload  
 - multiple files upload  
 - config celery for several workers  
+- check file saving status  
 - alter client-side with React  
+- for production use industrial database (MySQL, PostgreSQL)  

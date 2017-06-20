@@ -6,9 +6,10 @@ Show progress.
 Stack: django, channels, celery, jquery, websockets. 
 
 ```git clone```  
-```python manage.py migrate```  
+```python manage.py migrate``` 
+```celery worker -A hicarser -l info```  
 ```python manage.py runserver```  
-or for better efficiency  
+  or for real efficiency:  
 ```start your wsgi webserver```  
 ```start your asgi webserver ```  
 ```edit nginx config```  

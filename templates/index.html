@@ -32,7 +32,7 @@
             <div id="task_runner_div" style="margin-top:50px;">
                 <h2>Text Parser</h2>
                 <form id="taskform" enctype="multipart/form-data">
-                    <input type="file" name="file_upload" id="file_upload" multiple="">
+                    <input type="file" name="file_upload" id="file_upload">
                     <button type="submit" id="go" class="btn btn-info">Upload file</button>
                 </form>
             </div>
@@ -74,19 +74,19 @@
 $(function() {
 
 function displayFiles(files) {
+    console.log(files)
     var file_status = $("#file_status");
-    $.each(files, function(i, file) {
-        const id = (new Date()).getTime()
-        file.id = id
-        let row = '<tr>'
-        row += '<td id="file-' + file.id + '"> ? </td>'
-        row += '<td>' + file.name + '</td>'
-        row += '<td id="upload-' + file.id + '"> 0 % </td>'
-        row += '<td id="process-' + file.id + '"> ? %</td>'
-        row += '<td id="result-' + file.id + '"> ? </td>'
-        row += '</tr>'
-        file_status.append(row)
-    });
+    const id = (new Date()).getTime()
+    files[0].id = id
+    let row = '<tr>'
+    row += '<td id="file-' + files[0].id + '"> ? </td>'
+    row += '<td>' + files[0].name + '</td>'
+    row += '<td id="upload-' + files[0].id + '"> 0 % </td>'
+    row += '<td id="process-' + files[0].id + '"> ? %</td>'
+    row += '<td id="result-' + files[0].id + '"> ? </td>'
+    row += '</tr>'
+    file_status.append(row)
+
 }
 
 function prepareUpload(event) {
@@ -101,10 +101,8 @@ function uploadFiles(event) {
 
         // Create a formdata object and add the files
         var data = new FormData();
-        displayFiles(files)
-        for (let i in files) {
-            data.append(files[i].id, files[i]);
-        }
+        displayFiles(files);
+        data.append(files[0].id, files[0]);
         console.log(data)
         $.ajax({
             xhr: function(){
@@ -120,10 +118,7 @@ function uploadFiles(event) {
                     }
                     //update progressbar
                     var percentComplete = (event.loaded / event.total) * 100;
-                    for (let i in files)
-                    {
-                       $('#upload-' + files[i].id).text(percentComplete + ' %')
-                    };
+                    $('#upload-' + files[0].id).text(percentComplete + ' %')
                 }, true);
             }
             return xhr;
@@ -137,7 +132,7 @@ function uploadFiles(event) {
             contentType: false, 
             success: function(data)
             {   
-                files = []
+
             },
         });
     }

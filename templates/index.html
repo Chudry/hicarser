@@ -69,32 +69,31 @@
     </div>
 </div> <!-- container -->
 
-
 <script>
 $(function() {
 
-function displayFiles(files) {
-    console.log(files)
-    var file_status = $("#file_status");
-    const id = (new Date()).getTime()
-    files[0].id = id
-    let row = '<tr>'
-    row += '<td id="file-' + files[0].id + '"> ? </td>'
-    row += '<td>' + files[0].name + '</td>'
-    row += '<td id="upload-' + files[0].id + '"> 0 % </td>'
-    row += '<td id="process-' + files[0].id + '"> ? %</td>'
-    row += '<td id="result-' + files[0].id + '"> ? </td>'
-    row += '</tr>'
-    file_status.append(row)
+    function displayFiles(files) {
+      // draw chosen file into table before start uploading
+        var file_status = $("#file_status");
+        const id = (new Date()).getTime()
+        files[0].id = id
+        let row = '<tr>'
+        row += '<td id="file-' + files[0].id + '"> ? </td>'
+        row += '<td>' + files[0].name + '</td>'
+        row += '<td id="upload-' + files[0].id + '"> 0 % </td>'
+        row += '<td id="process-' + files[0].id + '"> ? %</td>'
+        row += '<td id="result-' + files[0].id + '"> ? </td>'
+        row += '</tr>'
+        file_status.append(row)
+    }
 
-}
+    function prepareUpload(event) {
+      // write chosen file to variable
+        files = event.target.files;
+    }
 
-function prepareUpload(event) {
-    files = event.target.files;
-
-}
-
-function uploadFiles(event) {
+    function uploadFiles(event) {
+      // Upload via AJAX
 
       event.stopPropagation(); // Stop stuff happening
         event.preventDefault(); // Totally stop stuff happening
@@ -103,10 +102,9 @@ function uploadFiles(event) {
         var data = new FormData();
         displayFiles(files);
         data.append(files[0].id, files[0]);
-        console.log(data)
         $.ajax({
             xhr: function(){
-            //upload Progress
+            // Catch upload progress
             var xhr = $.ajaxSettings.xhr();
             if (xhr.upload) {
                 xhr.upload.addEventListener('progress', function(event) {
@@ -116,7 +114,7 @@ function uploadFiles(event) {
                     if (event.lengthComputable) {
                         percent = Math.ceil(position / total * 100);
                     }
-                    //update progressbar
+                    // Draw progress to upload status cell
                     var percentComplete = (event.loaded / event.total) * 100;
                     $('#upload-' + files[0].id).text(percentComplete + ' %')
                 }, true);
@@ -132,14 +130,14 @@ function uploadFiles(event) {
             contentType: false, 
             success: function(data)
             {   
-
+                // Do what you want, but we don't need it
             },
         });
     }
-
-var files;
-$('input[type=file]').on('change', prepareUpload);
-$('form').on('submit', uploadFiles);
+    // Define file variable
+    var files;
+    $('input[type=file]').on('change', prepareUpload);
+    $('form').on('submit', uploadFiles);
 
     // When we're using HTTPS, use WSS too.
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
@@ -147,8 +145,10 @@ $('form').on('submit', uploadFiles);
     var socket = new ReconnectingWebSocket(ws_path);
 
     socket.onmessage = function(message) {
+      // Catch websocket messages
         var data = JSON.parse(message.data);
         if (data.action == "uploaded"){
+          // After uploading file change table id's to real file id
             $('input[type=file]').val('')
             var item = $('#process-' + data.file_id);
             $('#file-' + data.file_id).text(data.new_file_id)
@@ -157,10 +157,12 @@ $('form').on('submit', uploadFiles);
             $('#result-' + data.file_id).attr("id", "result-" + data.new_file_id);
         }
         else if (data.action == "processing"){
+          // Draw celery task progress
             var item = $('#process-' + data.file_id);
             item.text(data.progress + ' %');
         }
         else if (data.action == "completed"){
+          // Draw celery task result
             var item = $('#result-' + data.file_id);
             item.text(data.file_amount);
         }
@@ -169,8 +171,6 @@ $('form').on('submit', uploadFiles);
 });
 
 </script>
-
-
 
 </body>
 </html>

@@ -1,9 +1,9 @@
 # hicarser
 
-Ajax textfile load,parse(count symbols) with celery task, save result to db. 
+Ajax textfile load,parse(count symbols) with celery task, save result to db.  
 Show progressing on each step. 
 
-Stack: django, channels, celery, jquery, websockets. 
+Stack: Django, Channels, Celery, Jquery, websockets. 
 
 ```git clone```  
 ```python manage.py migrate```  
@@ -23,3 +23,4 @@ Possible improvements:
 - check file saving status  
 - alter client-side with React  
 - for production use industrial database (MySQL, PostgreSQL)  
+- use async framework for webapp (aiohttp, tornado, etc.)  

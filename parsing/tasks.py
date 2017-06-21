@@ -28,19 +28,29 @@ def process_file(file_id):
     file = TextFile.objects.get(pk=file_id)
     with open(file.file) as f:
         size = os.fstat(f.fileno()).st_size
-        step = size // 100
-        result = 0
-        for line in f:
-            for char in line:
-                result += 1
-                if result % step == 0:
-                    Group('pool').send({
-                        "text": json.dumps({
-                            "action": "processing",
-                            "file_id": file_id,
-                            "progress": result // step,
+        if size == 0:
+            result = 0
+            Group('pool').send({
+                "text": json.dumps({
+                    "action": "processing",
+                    "file_id": file_id,
+                    "progress": 100,
+                })
+            })
+        else:
+            step = size // 100
+            result = 0
+            for line in f:
+                for char in line:
+                    result += 1
+                    if result % step == 0:
+                        Group('pool').send({
+                            "text": json.dumps({
+                                "action": "processing",
+                                "file_id": file_id,
+                                "progress": result // step,
+                            })
                         })
-                    })
 
     file.amount = result
     file.completed = datetime.datetime.now()

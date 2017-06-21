@@ -49,7 +49,6 @@ def upload(request):
     """
     if request.is_ajax():
         data = {}
-        print request.FILES
         destination, name = handle_file(request.FILES.values()[0])
         textfile = TextFile()
         textfile.name = name

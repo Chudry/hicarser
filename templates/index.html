@@ -32,7 +32,7 @@
             <div id="task_runner_div" style="margin-top:50px;">
                 <h2>Text Parser</h2>
                 <form id="taskform" enctype="multipart/form-data">
-                    <input type="file" name="file_upload" id="file_upload">
+                    <input type="file" name="file_upload" id="file_upload" accept=".txt">
                     <button type="submit" id="go" class="btn btn-info">Upload file</button>
                 </form>
             </div>
@@ -55,10 +55,10 @@
                             <td>{{ file.name }}</td>
                             <td> 100 %</td>
                             <td id="process-{{ file.id }}">
-                            {% if file.amount%} 100 %
+                            {% if file.amount or file.amount == 0 %} 100 %
                             {% else %} ? %
                             {% endif%}</td>
-                            <td id="result-{{ file.id }}">{{ file.amount|default:'?'}}</td>
+                            <td id="result-{{ file.id }}">{{ file.amount }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -69,8 +69,9 @@
     </div>
 </div> <!-- container -->
 
-// For production move script to separate *.js file and include here
+
 <script>
+// For production move script to separate *.js file and include here
 $(function() {
 
     function displayFiles(files) {
@@ -101,39 +102,41 @@ $(function() {
 
         // Create a formdata object and add the files
         var data = new FormData();
-        displayFiles(files);
-        data.append(files[0].id, files[0]);
-        $.ajax({
-            xhr: function(){
-            // Catch upload progress
-            var xhr = $.ajaxSettings.xhr();
-            if (xhr.upload) {
-                xhr.upload.addEventListener('progress', function(event) {
-                    var percent = 0;
-                    var position = event.loaded || event.position;
-                    var total = event.total;
-                    if (event.lengthComputable) {
-                        percent = Math.ceil(position / total * 100);
-                    }
-                    // Draw progress to upload status cell
-                    var percentComplete = (event.loaded / event.total) * 100;
-                    $('#upload-' + files[0].id).text(percentComplete + ' %')
-                }, true);
-            }
-            return xhr;
-        },
-            url: '/upload/',
-            type: 'POST',
-            data: data,
-            cache: false,
-            dataType: 'json',
-            processData: false, 
-            contentType: false, 
-            success: function(data)
-            {   
-                // Do what you want, but we don't need it
+        if (files != undefined) {
+            displayFiles(files);
+            data.append(files[0].id, files[0]);
+            $.ajax({
+                xhr: function(){
+                // Catch upload progress
+                var xhr = $.ajaxSettings.xhr();
+                if (xhr.upload) {
+                    xhr.upload.addEventListener('progress', function(event) {
+                        var percent = 0;
+                        var position = event.loaded || event.position;
+                        var total = event.total;
+                        if (event.lengthComputable) {
+                            percent = Math.ceil(position / total * 100);
+                        }
+                        // Draw progress to upload status cell
+                        var percentComplete = (event.loaded / event.total) * 100;
+                        $('#upload-' + files[0].id).text(percentComplete + ' %')
+                    }, true);
+                }
+                return xhr;
             },
-        });
+                url: '/upload/',
+                type: 'POST',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                processData: false, 
+                contentType: false, 
+                success: function(data)
+                {   
+                    // Do what you want, but we don't need it
+                },
+            });
+        }
     }
     // Define file variable
     var files;
@@ -144,7 +147,6 @@ $(function() {
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     var ws_path = ws_scheme + '://' + window.location.host + '/pool/';
     var socket = new ReconnectingWebSocket(ws_path);
-
     socket.onmessage = function(message) {
       // Catch websocket messages
         var data = JSON.parse(message.data);

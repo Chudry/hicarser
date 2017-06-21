@@ -28,4 +28,3 @@ Possible improvements:
 - draw file saving progress  
 - alter client-side with React  
 - for production use industrial database (MySQL, PostgreSQL)  
-- use async framework for webapp (aiohttp, tornado, etc.)  
